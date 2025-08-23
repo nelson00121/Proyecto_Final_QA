@@ -1,0 +1,128 @@
+@page "/Admin/EditarUsuario/{id:int}"
+@model ProFinQA.Pages.Admin.EditarUsuarioModel
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-cog me-2"></i>Editar Usuario (Admin)
+                </h4>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Model.MensajeExito))
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>@Model.MensajeExito
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.MensajeError))
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>@Model.MensajeError
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form method="post">
+                    <input asp-for="EditarUsuario.Id" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EditarUsuario.PrimerNombre" class="form-label">
+                                <i class="fas fa-user me-1"></i>Primer Nombre *
+                            </label>
+                            <input asp-for="EditarUsuario.PrimerNombre" class="form-control" placeholder="Ingrese el primer nombre" />
+                            <span asp-validation-for="EditarUsuario.PrimerNombre" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EditarUsuario.SegundoNombre" class="form-label">
+                                <i class="fas fa-user me-1"></i>Segundo Nombre
+                            </label>
+                            <input asp-for="EditarUsuario.SegundoNombre" class="form-control" placeholder="Ingrese el segundo nombre" />
+                            <span asp-validation-for="EditarUsuario.SegundoNombre" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EditarUsuario.PrimerApellido" class="form-label">
+                                <i class="fas fa-user me-1"></i>Primer Apellido *
+                            </label>
+                            <input asp-for="EditarUsuario.PrimerApellido" class="form-control" placeholder="Ingrese el primer apellido" />
+                            <span asp-validation-for="EditarUsuario.PrimerApellido" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EditarUsuario.SegundoApellido" class="form-label">
+                                <i class="fas fa-user me-1"></i>Segundo Apellido
+                            </label>
+                            <input asp-for="EditarUsuario.SegundoApellido" class="form-control" placeholder="Ingrese el segundo apellido" />
+                            <span asp-validation-for="EditarUsuario.SegundoApellido" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EditarUsuario.Usuario" class="form-label">
+                            <i class="fas fa-at me-1"></i>Nombre de Usuario *
+                        </label>
+                        <input asp-for="EditarUsuario.Usuario" class="form-control" placeholder="Ingrese el nombre de usuario" />
+                        <span asp-validation-for="EditarUsuario.Usuario" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input asp-for="EditarUsuario.IsAdmin" class="form-check-input" type="checkbox" />
+                            <label asp-for="EditarUsuario.IsAdmin" class="form-check-label">
+                                <i class="fas fa-crown me-1"></i>Usuario Administrador
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    
+                    <h5 class="mb-3">
+                        <i class="fas fa-lock me-2"></i>Cambiar Contraseña
+                    </h5>
+                    <p class="text-muted small mb-3">Deje estos campos en blanco si no desea cambiar la contraseña</p>
+
+                    <div class="mb-3">
+                        <label asp-for="EditarUsuario.NuevaPassword" class="form-label">
+                            <i class="fas fa-key me-1"></i>Nueva Contraseña
+                        </label>
+                        <input asp-for="EditarUsuario.NuevaPassword" type="password" class="form-control" placeholder="Ingrese la nueva contraseña" />
+                        <span asp-validation-for="EditarUsuario.NuevaPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="EditarUsuario.ConfirmarPassword" class="form-label">
+                            <i class="fas fa-key me-1"></i>Confirmar Nueva Contraseña
+                        </label>
+                        <input asp-for="EditarUsuario.ConfirmarPassword" type="password" class="form-control" placeholder="Confirme la nueva contraseña" />
+                        <span asp-validation-for="EditarUsuario.ConfirmarPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-page="/Admin/ListarUsuarios" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-arrow-left me-1"></i>Volver a Lista
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save me-1"></i>Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

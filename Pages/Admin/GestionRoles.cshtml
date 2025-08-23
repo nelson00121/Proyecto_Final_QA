@@ -1,0 +1,93 @@
+@page
+@model ProFinQA.Pages.Admin.GestionRolesModel
+@{
+    ViewData["Title"] = "Gestión de Roles";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Gestión de Roles de Usuario</h3>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @Model.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Seleccionar Usuario</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post" asp-page-handler="SelectUser">
+                                        <div class="mb-3">
+                                            <select asp-for="SelectedUserId" class="form-select" onchange="this.form.submit()">
+                                                <option value="">Seleccione un usuario</option>
+                                                @foreach (var user in Model.Users)
+                                                {
+                                                    <option value="@user.Id" selected="@(user.Id == Model.SelectedUserId)">
+                                                        @user.Usuario1 (@(user.Empleado?.PrimerNombre ?? "Sin empleado"))
+                                                    </option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.SelectedUserId > 0)
+                        {
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Roles del Usuario</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="post" asp-page-handler="UpdateRoles">
+                                            <input type="hidden" asp-for="SelectedUserId" />
+                                            
+                                            <div class="row">
+                                                @foreach (var role in Model.AllRoles)
+                                                {
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" 
+                                                                   type="checkbox" 
+                                                                   name="SelectedRoleIds" 
+                                                                   value="@role.Id"
+                                                                   id="role_@role.Id"
+                                                                   @(Model.UserRoleIds.Contains(role.Id) ? "checked" : "")>
+                                                            <label class="form-check-label" for="role_@role.Id">
+                                                                <strong>@role.Nombre</strong>
+                                                                <br>
+                                                                <small class="text-muted">@role.Descripcion</small>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <button type="submit" class="btn btn-primary">Actualizar Roles</button>
+                                                <a asp-page="/Admin/ListarUsuarios" class="btn btn-secondary">Volver</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

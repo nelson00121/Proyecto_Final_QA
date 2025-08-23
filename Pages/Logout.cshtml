@@ -1,0 +1,22 @@
+@page
+@model ProFinQA.Pages.LogoutModel
+@{
+    ViewData["Title"] = "Cerrando Sesión";
+}
+
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100">
+    <div class="text-center">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Cerrando sesión...</span>
+        </div>
+        <h4>Cerrando sesión...</h4>
+        <p class="text-muted">Será redirigido al login en unos momentos.</p>
+    </div>
+</div>
+
+<script>
+    // Redirigir automáticamente después de mostrar el mensaje
+    setTimeout(function() {
+        window.location.href = '/Login';
+    }, 1500);
+</script>

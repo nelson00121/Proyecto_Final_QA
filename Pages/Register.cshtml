@@ -1,0 +1,176 @@
+@page
+@model ProFinQA.Pages.RegisterModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - ProFinQA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .register-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 500px;
+            margin: auto;
+        }
+        .register-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        .register-form {
+            padding: 2rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-register {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        .link-login {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .link-login:hover {
+            color: #5a67d8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="register-container">
+                    <div class="register-header">
+                        <i class="fas fa-user-plus fa-3x mb-3"></i>
+                        <h2>Registro de Usuario</h2>
+                        <p class="mb-0">Sistema de Gestión de Bodega</p>
+                    </div>
+                    <div class="register-form">
+                        <form method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="RegisterRequest.PrimerNombre" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Primer Nombre *
+                                    </label>
+                                    <input asp-for="RegisterRequest.PrimerNombre" class="form-control" placeholder="Primer nombre" />
+                                    <span asp-validation-for="RegisterRequest.PrimerNombre" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="RegisterRequest.SegundoNombre" class="form-label">
+                                        Segundo Nombre
+                                    </label>
+                                    <input asp-for="RegisterRequest.SegundoNombre" class="form-control" placeholder="Segundo nombre" />
+                                    <span asp-validation-for="RegisterRequest.SegundoNombre" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="RegisterRequest.PrimerApellido" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Primer Apellido *
+                                    </label>
+                                    <input asp-for="RegisterRequest.PrimerApellido" class="form-control" placeholder="Primer apellido" />
+                                    <span asp-validation-for="RegisterRequest.PrimerApellido" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="RegisterRequest.SegundoApellido" class="form-label">
+                                        Segundo Apellido
+                                    </label>
+                                    <input asp-for="RegisterRequest.SegundoApellido" class="form-control" placeholder="Segundo apellido" />
+                                    <span asp-validation-for="RegisterRequest.SegundoApellido" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="RegisterRequest.Usuario" class="form-label">
+                                    <i class="fas fa-at me-2"></i>Usuario *
+                                </label>
+                                <input asp-for="RegisterRequest.Usuario" class="form-control" placeholder="Nombre de usuario único" />
+                                <span asp-validation-for="RegisterRequest.Usuario" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="RegisterRequest.Password" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Contraseña *
+                                    </label>
+                                    <input asp-for="RegisterRequest.Password" type="password" class="form-control" placeholder="Mínimo 6 caracteres" />
+                                    <span asp-validation-for="RegisterRequest.Password" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="RegisterRequest.ConfirmPassword" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Confirmar Contraseña *
+                                    </label>
+                                    <input asp-for="RegisterRequest.ConfirmPassword" type="password" class="form-control" placeholder="Repetir contraseña" />
+                                    <span asp-validation-for="RegisterRequest.ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" asp-for="RegisterRequest.IsAdmin" />
+                                    <label class="form-check-label" asp-for="RegisterRequest.IsAdmin">
+                                        <i class="fas fa-crown me-2"></i>Usuario Administrador
+                                    </label>
+                                </div>
+                                <small class="text-muted">Marcar solo si el usuario necesita permisos de administrador</small>
+                            </div>
+                            
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary btn-register">
+                                    <i class="fas fa-user-plus me-2"></i>Registrar Usuario
+                                </button>
+                            </div>
+
+                            <div class="text-center">
+                                <a href="/Login" class="link-login">
+                                    <i class="fas fa-sign-in-alt me-1"></i>¿Ya tienes cuenta? Inicia sesión aquí
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
