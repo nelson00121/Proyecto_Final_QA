@@ -390,7 +390,8 @@ public partial class BodegaContext : DbContext
             entity.HasOne(d => d.IdEquipoNavigation).WithMany(p => p.Mantenimientos)
                 .HasForeignKey(d => d.IdEquipo)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("mantenimiento_ibfk_1");
+                .HasConstraintName("mantenimiento_ibfk_1")
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<Marca>(entity =>

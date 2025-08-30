@@ -1,0 +1,278 @@
+@page
+@model ProFinQA.Pages.Equipos.DetailsModel
+@{
+    ViewData["Title"] = "Detalles del Equipo";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Detalles del Equipo - @Model.Equipo.Nombre
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">ID:</dt>
+                                <dd class="col-sm-7"><span class="badge bg-primary">@Model.Equipo.Id</span></dd>
+                                
+                                <dt class="col-sm-5">Identificador:</dt>
+                                <dd class="col-sm-7">@(Model.Equipo.Identificador ?? "No asignado")</dd>
+                                
+                                <dt class="col-sm-5">Nombre:</dt>
+                                <dd class="col-sm-7"><strong>@Model.Equipo.Nombre</strong></dd>
+                                
+                                <dt class="col-sm-5">Marca:</dt>
+                                <dd class="col-sm-7">@Model.Equipo.IdMarcaNavigation?.Nombre</dd>
+                                
+                                <dt class="col-sm-5">Color:</dt>
+                                <dd class="col-sm-7">@Model.Equipo.Color</dd>
+                                
+                                <dt class="col-sm-5">Serie:</dt>
+                                <dd class="col-sm-7"><code>@Model.Equipo.Serie</code></dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Valor:</dt>
+                                <dd class="col-sm-7">
+                                    <strong class="text-success">
+                                        @Model.Equipo.Valor.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("es-GT"))
+                                    </strong>
+                                </dd>
+                                
+                                <dt class="col-sm-5">Estado:</dt>
+                                <dd class="col-sm-7">
+                                    <span class="badge @(Model.Equipo.Estado switch {
+                                        "activo" => "bg-success",
+                                        "inactivo" => "bg-secondary",
+                                        "mantenimiento" => "bg-warning text-dark",
+                                        "suspendido" => "bg-danger",
+                                        _ => "bg-light text-dark"
+                                    })">
+                                        @Model.Equipo.Estado?.ToUpper()
+                                    </span>
+                                </dd>
+                                
+                                <dt class="col-sm-5">Alimentación:</dt>
+                                <dd class="col-sm-7">@(Model.Equipo.TipoAlimentacion ?? "No especificado")</dd>
+                                
+                                <dt class="col-sm-5">Empleado Asignado:</dt>
+                                <dd class="col-sm-7">
+                                    @if (Model.Equipo.IdEmpleadoNavigation != null)
+                                    {
+                                        <span class="badge bg-info">
+                                            @($"{Model.Equipo.IdEmpleadoNavigation.PrimerNombre} {Model.Equipo.IdEmpleadoNavigation.PrimerApellido}")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin asignar</span>
+                                    }
+                                </dd>
+                                
+                                <dt class="col-sm-5">Fecha Creación:</dt>
+                                <dd class="col-sm-7">@Model.Equipo.FechaCommit?.ToString("dd/MM/yyyy HH:mm")</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Equipo.Extras))
+                    {
+                        <hr />
+                        <div class="row">
+                            <div class="col-12">
+                                <dt>Extras/Observaciones:</dt>
+                                <dd class="bg-light p-3 rounded mt-2">
+                                    @Model.Equipo.Extras
+                                </dd>
+                            </div>
+                        </div>
+                    }
+
+                    <hr />
+                    <div class="d-flex justify-content-between">
+                        <a asp-page="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver a la lista
+                        </a>
+                        <div>
+                            <a asp-page="Edit" asp-route-id="@Model.Equipo.Id" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a asp-page="Delete" asp-route-id="@Model.Equipo.Id" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Información adicional -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Resumen</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h4 class="text-primary">@Model.AsignacionesCount</h4>
+                                <small>Asignaciones</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-warning">@Model.ReportesCount</h4>
+                            <small>Reportes</small>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h4 class="text-info">@Model.MantenimientosCount</h4>
+                                <small>Mantenimientos</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">@Model.TotalRegistros</h4>
+                            <small>Total Registros</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tipo específico de equipo -->
+            @if (Model.Vehiculo != null)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-car"></i> Información del Vehículo</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="mb-0">
+                            <dt>No. Motor:</dt>
+                            <dd>@Model.Vehiculo.NoMotor</dd>
+                            <dt>VIN:</dt>
+                            <dd><code>@Model.Vehiculo.Vin</code></dd>
+                            <dt>Placa:</dt>
+                            <dd><span class="badge bg-dark">@Model.Vehiculo.Placa</span></dd>
+                            <dt>Modelo:</dt>
+                            <dd>@Model.Vehiculo.Modelo</dd>
+                            <dt>Cilindrada:</dt>
+                            <dd>@Model.Vehiculo.Cilindrada cc</dd>
+                        </dl>
+                    </div>
+                </div>
+            }
+
+            @if (Model.Electronico != null)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-mobile-alt"></i> Información Electrónica</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="mb-0">
+                            @if (!string.IsNullOrEmpty(Model.Electronico.Imei))
+                            {
+                                <dt>IMEI:</dt>
+                                <dd><code>@Model.Electronico.Imei</code></dd>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Electronico.SistemaOperativo))
+                            {
+                                <dt>Sistema Operativo:</dt>
+                                <dd>@Model.Electronico.SistemaOperativo</dd>
+                            }
+                            <dt>Conectividad:</dt>
+                            <dd>@(Model.Electronico.Conectividad ?? "No especificado")</dd>
+                            <dt>Operador:</dt>
+                            <dd>@(Model.Electronico.Operador ?? "No especificado")</dd>
+                        </dl>
+                    </div>
+                </div>
+            }
+
+            @if (Model.Mobiliario != null)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chair"></i> Información del Mobiliario</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="mb-0">
+                            <dt>Material:</dt>
+                            <dd>@Model.Mobiliario.Material</dd>
+                            <dt>Dimensiones (cm):</dt>
+                            <dd>
+                                Alto: @Model.Mobiliario.Altura.ToString("F1") <br />
+                                Ancho: @Model.Mobiliario.Ancho.ToString("F1") <br />
+                                Profundidad: @Model.Mobiliario.Profundidad.ToString("F1")
+                            </dd>
+                            <dt>Cantidad de Piezas:</dt>
+                            <dd>@Model.Mobiliario.CantidadPiezas</dd>
+                        </dl>
+                    </div>
+                </div>
+            }
+
+            @if (Model.Herramienta != null)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-tools"></i> Información de la Herramienta</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="mb-0">
+                            <dt>Material:</dt>
+                            <dd>@Model.Herramienta.Material</dd>
+                        </dl>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    
+    @if (Model.UltimosReportes.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-file-alt"></i> Últimos Reportes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Causa</th>
+                                        <th>Empleado</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var reporte in Model.UltimosReportes)
+                                    {
+                                        <tr>
+                                            <td>@reporte.FechaCommit?.ToString("dd/MM/yyyy")</td>
+                                            <td>@reporte.IdCausaNavigation?.Nombre</td>
+                                            <td>@($"{reporte.IdEmpleadoNavigation?.PrimerNombre} {reporte.IdEmpleadoNavigation?.PrimerApellido}")</td>
+                                            <td>@(reporte.Observacion?.Length > 50 ? reporte.Observacion.Substring(0, 50) + "..." : reporte.Observacion)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

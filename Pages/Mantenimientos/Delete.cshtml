@@ -1,0 +1,106 @@
+@page
+@model ProFinQA.Pages.Mantenimientos.DeleteModel
+@{
+    ViewData["Title"] = "Eliminar Mantenimiento";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Eliminar Mantenimiento</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" role="alert">
+                        <strong>¿Está seguro de que desea eliminar este mantenimiento?</strong><br>
+                        Esta acción no se puede deshacer.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Información del Mantenimiento</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>ID:</strong></td>
+                                    <td>@Model.Mantenimiento.Id</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fecha:</strong></td>
+                                    <td>@Model.Mantenimiento.Fecha.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tipo:</strong></td>
+                                    <td>
+                                        <span class="badge @(Model.Mantenimiento.Tipo.ToLower() switch {
+                                            "preventivo" => "bg-success",
+                                            "correctivo" => "bg-warning text-dark",
+                                            "emergencia" => "bg-danger",
+                                            _ => "bg-secondary"
+                                        })">
+                                            @Model.Mantenimiento.Tipo.ToUpper()
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Costo:</strong></td>
+                                    <td>
+                                        @if (Model.Mantenimiento.Costo.HasValue)
+                                        {
+                                            @Model.Mantenimiento.Costo.Value.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("es-GT"))
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No especificado</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Equipo Asociado</h6>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">@Model.Mantenimiento.IdEquipoNavigation?.Nombre</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <strong>Identificador:</strong> @Model.Mantenimiento.IdEquipoNavigation?.Identificador<br>
+                                            <strong>Serie:</strong> @Model.Mantenimiento.IdEquipoNavigation?.Serie<br>
+                                            <strong>Marca:</strong> @Model.Mantenimiento.IdEquipoNavigation?.IdMarcaNavigation?.Nombre
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Mantenimiento.Descripcion))
+                    {
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <h6 class="text-muted">Descripción</h6>
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <p class="card-text">@Model.Mantenimiento.Descripcion</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <form method="post" class="mt-4">
+                        <input type="hidden" asp-for="Mantenimiento.Id" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="./Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Confirmar Eliminación
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

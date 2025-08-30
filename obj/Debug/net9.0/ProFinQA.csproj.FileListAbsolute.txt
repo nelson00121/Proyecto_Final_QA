@@ -211,3 +211,4 @@
 /home/nelson/Escritorio/ProFinQA/obj/Debug/net9.0/ProFinQA.csproj.AssemblyReference.cache
 /home/nelson/Escritorio/ProFinQA/obj/Debug/net9.0/ProFinQA.csproj.Up2Date
 /home/nelson/Escritorio/ProFinQA/bin/Debug/net9.0/BCrypt.Net-Next.dll
+/home/nelson/Escritorio/ProFinQA/obj/Debug/net9.0/ProFinQA.sourcelink.json

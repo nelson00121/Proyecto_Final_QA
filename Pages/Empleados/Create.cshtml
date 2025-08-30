@@ -1,0 +1,95 @@
+@page
+@model ProFinQA.Pages.Empleados.CreateModel
+@{
+    ViewData["Title"] = "Crear Empleado";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Crear Nuevo Empleado</h4>
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Empleado.PrimerNombre" class="form-label">Primer Nombre</label>
+                                    <input asp-for="Empleado.PrimerNombre" class="form-control" />
+                                    <span asp-validation-for="Empleado.PrimerNombre" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Empleado.SegundoNombre" class="form-label">Segundo Nombre</label>
+                                    <input asp-for="Empleado.SegundoNombre" class="form-control" />
+                                    <span asp-validation-for="Empleado.SegundoNombre" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Empleado.PrimerApellido" class="form-label">Primer Apellido</label>
+                                    <input asp-for="Empleado.PrimerApellido" class="form-control" />
+                                    <span asp-validation-for="Empleado.PrimerApellido" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Empleado.SegundoApellido" class="form-label">Segundo Apellido</label>
+                                    <input asp-for="Empleado.SegundoApellido" class="form-control" />
+                                    <span asp-validation-for="Empleado.SegundoApellido" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Empleado.IdUsuario" class="form-label">Usuario Asociado</label>
+                                    <select asp-for="Empleado.IdUsuario" class="form-select" asp-items="ViewBag.IdUsuario">
+                                        <option value="">Seleccionar usuario...</option>
+                                    </select>
+                                    <span asp-validation-for="Empleado.IdUsuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Empleado.Estado" class="form-label">Estado</label>
+                                    <select asp-for="Empleado.Estado" class="form-select">
+                                        <option value="activo">Activo</option>
+                                        <option value="inactivo">Inactivo</option>
+                                        <option value="vacaciones">Vacaciones</option>
+                                    </select>
+                                    <span asp-validation-for="Empleado.Estado" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Crear Empleado
+                            </button>
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

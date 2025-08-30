@@ -1,0 +1,152 @@
+@page
+@model ProFinQA.Pages.Equipos.DeleteModel
+@{
+    ViewData["Title"] = "Eliminar Equipo";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <strong><i class="fas fa-warning"></i> Atención:</strong> 
+                        Esta acción no se puede deshacer. ¿Está seguro de que desea eliminar este equipo?
+                    </div>
+
+                    <h5>Información del Equipo a Eliminar:</h5>
+                    <hr />
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">ID:</dt>
+                                <dd class="col-sm-8">@Model.Equipo.Id</dd>
+                                
+                                <dt class="col-sm-4">Identificador:</dt>
+                                <dd class="col-sm-8">@(Model.Equipo.Identificador ?? "No asignado")</dd>
+                                
+                                <dt class="col-sm-4">Nombre:</dt>
+                                <dd class="col-sm-8">@Model.Equipo.Nombre</dd>
+                                
+                                <dt class="col-sm-4">Marca:</dt>
+                                <dd class="col-sm-8">@Model.Equipo.IdMarcaNavigation?.Nombre</dd>
+                                
+                                <dt class="col-sm-4">Serie:</dt>
+                                <dd class="col-sm-8">@Model.Equipo.Serie</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Color:</dt>
+                                <dd class="col-sm-8">@Model.Equipo.Color</dd>
+                                
+                                <dt class="col-sm-4">Valor:</dt>
+                                <dd class="col-sm-8">@Model.Equipo.Valor.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("es-GT"))</dd>
+                                
+                                <dt class="col-sm-4">Estado:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge @(Model.Equipo.Estado switch {
+                                        "activo" => "bg-success",
+                                        "inactivo" => "bg-secondary",
+                                        "mantenimiento" => "bg-warning text-dark",
+                                        "suspendido" => "bg-danger",
+                                        _ => "bg-light text-dark"
+                                    })">
+                                        @Model.Equipo.Estado?.ToUpper()
+                                    </span>
+                                </dd>
+                                
+                                <dt class="col-sm-4">Empleado:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Equipo.IdEmpleadoNavigation != null)
+                                    {
+                                        @($"{Model.Equipo.IdEmpleadoNavigation.PrimerNombre} {Model.Equipo.IdEmpleadoNavigation.PrimerApellido}")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin asignar</span>
+                                    }
+                                </dd>
+                                
+                                <dt class="col-sm-4">Fecha Creación:</dt>
+                                <dd class="col-sm-8">@Model.Equipo.FechaCommit?.ToString("dd/MM/yyyy HH:mm")</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Equipo.Extras))
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <dt>Extras/Observaciones:</dt>
+                                <dd class="bg-light p-2 rounded">@Model.Equipo.Extras</dd>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.HasRelatedRecords)
+                    {
+                        <div class="alert alert-info mt-3" role="alert">
+                            <strong><i class="fas fa-info-circle"></i> Información:</strong>
+                            Este equipo tiene registros relacionados:
+                            <ul class="mb-0 mt-2">
+                                @if (Model.AsignacionesCount > 0)
+                                {
+                                    <li>@Model.AsignacionesCount asignacion(es)</li>
+                                }
+                                @if (Model.ReportesCount > 0)
+                                {
+                                    <li>@Model.ReportesCount reporte(s)</li>
+                                }
+                                @if (Model.MantenimientosCount > 0)
+                                {
+                                    <li>@Model.MantenimientosCount mantenimiento(s)</li>
+                                }
+                                @if (Model.VehiculosCount > 0)
+                                {
+                                    <li>@Model.VehiculosCount vehículo(s)</li>
+                                }
+                                @if (Model.ElectronicosCount > 0)
+                                {
+                                    <li>@Model.ElectronicosCount electrónico(s)</li>
+                                }
+                                @if (Model.MobiliariosCount > 0)
+                                {
+                                    <li>@Model.MobiliariosCount mobiliario(s)</li>
+                                }
+                                @if (Model.HerramientasCount > 0)
+                                {
+                                    <li>@Model.HerramientasCount herramienta(s)</li>
+                                }
+                            </ul>
+                            Eliminar este equipo también eliminará todos los registros relacionados.
+                        </div>
+                    }
+
+                    <form method="post" class="mt-4">
+                        <input type="hidden" asp-for="Equipo.Id" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <div>
+                                <a asp-page="Details" asp-route-id="@Model.Equipo.Id" class="btn btn-info">
+                                    <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Confirmar Eliminación
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,216 @@
+@page
+@model ProFinQA.Pages.Empleados.EquiposModel
+@{
+    ViewData["Title"] = "Equipos del Empleado";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Equipos Asignados</h4>
+                        @if (Model.Empleado != null)
+                        {
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>
+                                @Model.Empleado.PrimerNombre @Model.Empleado.SegundoNombre @Model.Empleado.PrimerApellido @Model.Empleado.SegundoApellido
+                            </small>
+                        }
+                    </div>
+                    <div>
+                        <a asp-page="/Asignaciones/Create" asp-route-empleadoId="@Model.Empleado?.Id" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Asignar Equipo
+                        </a>
+                        <a asp-page="./Details" asp-route-id="@Model.Empleado?.Id" class="btn btn-info">
+                            <i class="fas fa-user"></i> Ver Empleado
+                        </a>
+                        <a asp-page="./Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.Empleado != null)
+                    {
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center">
+                                        <h3>@Model.Empleado.Equipos.Count</h3>
+                                        <p class="mb-0">Total Equipos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h3>@Model.Empleado.Equipos.Count(e => e.Estado == "En uso")</h3>
+                                        <p class="mb-0">En Uso</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-dark">
+                                    <div class="card-body text-center">
+                                        <h3>@Model.Empleado.Equipos.Count(e => e.Estado == "Mantenimiento")</h3>
+                                        <p class="mb-0">Mantenimiento</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-secondary text-white">
+                                    <div class="card-body text-center">
+                                        <h3>$@Model.Empleado.Equipos.Sum(e => e.Valor).ToString("N2")</h3>
+                                        <p class="mb-0">Valor Total</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Empleado.Equipos.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Identificador</th>
+                                            <th>Nombre</th>
+                                            <th>Marca</th>
+                                            <th>Serie</th>
+                                            <th>Estado</th>
+                                            <th>Valor</th>
+                                            <th>Fecha Asignación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var equipo in Model.Empleado.Equipos.OrderBy(e => e.Identificador))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <strong>@equipo.Identificador</strong>
+                                                </td>
+                                                <td>@equipo.Nombre</td>
+                                                <td>@equipo.IdMarcaNavigation?.Nombre</td>
+                                                <td>@equipo.Serie</td>
+                                                <td>
+                                                    @if (equipo.Estado == "En uso")
+                                                    {
+                                                        <span class="badge bg-success">@equipo.Estado</span>
+                                                    }
+                                                    else if (equipo.Estado == "Disponible")
+                                                    {
+                                                        <span class="badge bg-info">@equipo.Estado</span>
+                                                    }
+                                                    else if (equipo.Estado == "Mantenimiento")
+                                                    {
+                                                        <span class="badge bg-warning text-dark">@equipo.Estado</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-danger">@equipo.Estado</span>
+                                                    }
+                                                </td>
+                                                <td>$@equipo.Valor.ToString("N2")</td>
+                                                <td>@equipo.FechaCommit?.ToString("dd/MM/yyyy")</td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a asp-page="/Equipos/Details" asp-route-id="@equipo.Id" class="btn btn-sm btn-outline-info" title="Ver detalles">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        @{
+                                                            var asignacionActiva = Model.AsignacionesActivas?.FirstOrDefault(a => a.IdEquipo == equipo.Id);
+                                                        }
+                                                        @if (asignacionActiva != null)
+                                                        {
+                                                            <a asp-page="/Asignaciones/Return" asp-route-id="@asignacionActiva.Id" class="btn btn-sm btn-outline-warning" title="Devolver equipo">
+                                                                <i class="fas fa-undo"></i>
+                                                            </a>
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <i class="fas fa-laptop fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">Este empleado no tiene equipos asignados</h5>
+                                <p class="text-muted">Haz clic en "Asignar Equipo" para asignar un equipo a este empleado.</p>
+                                <a asp-page="/Asignaciones/Create" asp-route-empleadoId="@Model.Empleado.Id" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Asignar Primer Equipo
+                                </a>
+                            </div>
+                        }
+
+                        @if (Model.Empleado.Asignacions.Any())
+                        {
+                            <hr />
+                            <h5>Historial de Asignaciones</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha Asignación</th>
+                                            <th>Equipo</th>
+                                            <th>Tipo</th>
+                                            <th>Fecha Devolución</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var asignacion in Model.Empleado.Asignacions.OrderByDescending(a => a.FechaInicio).Take(10))
+                                        {
+                                            <tr>
+                                                <td>@asignacion.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                                <td>
+                                                    <strong>@asignacion.IdEquipoNavigation?.Identificador</strong><br>
+                                                    <small class="text-muted">@asignacion.IdEquipoNavigation?.Nombre</small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-info">Asignación</span>
+                                                </td>
+                                                <td>
+                                                    @if (asignacion.FechaFin.HasValue)
+                                                    {
+                                                        @asignacion.FechaFin?.ToString("dd/MM/yyyy")
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">-</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (asignacion.FechaFin.HasValue)
+                                                    {
+                                                        <span class="badge bg-secondary">Devuelto</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-info">Activo</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> Empleado no encontrado.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

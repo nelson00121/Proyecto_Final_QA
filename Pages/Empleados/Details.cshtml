@@ -1,0 +1,175 @@
+@page
+@model ProFinQA.Pages.Empleados.DetailsModel
+@{
+    ViewData["Title"] = "Detalles del Empleado";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Detalles del Empleado</h4>
+                    <div>
+                        <a asp-page="./Equipos" asp-route-id="@Model.Empleado?.Id" class="btn btn-info">
+                            <i class="fas fa-laptop"></i> Ver Equipos
+                        </a>
+                        <a asp-page="./Edit" asp-route-id="@Model.Empleado?.Id" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a asp-page="./Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.Empleado != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Información Personal</h5>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td><strong>Nombre Completo:</strong></td>
+                                        <td>@Model.Empleado.PrimerNombre @Model.Empleado.SegundoNombre @Model.Empleado.PrimerApellido @Model.Empleado.SegundoApellido</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Usuario Asociado:</strong></td>
+                                        <td>@Model.Empleado.IdUsuarioNavigation?.Usuario1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estado:</strong></td>
+                                        <td>
+                                            @if (Model.Empleado.Estado == "activo")
+                                            {
+                                                <span class="badge bg-success">@Model.Empleado.Estado</span>
+                                            }
+                                            else if (Model.Empleado.Estado == "inactivo")
+                                            {
+                                                <span class="badge bg-danger">@Model.Empleado.Estado</span>
+                                            }
+                                            else if (Model.Empleado.Estado == "vacaciones")
+                                            {
+                                                <span class="badge bg-warning text-dark">@Model.Empleado.Estado</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Estadísticas</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card bg-info text-white">
+                                            <div class="card-body text-center">
+                                                <h3>@Model.Empleado.Equipos.Count</h3>
+                                                <p>Equipos Asignados</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card bg-secondary text-white">
+                                            <div class="card-body text-center">
+                                                <h3>@Model.Empleado.Reportes.Count</h3>
+                                                <p>Reportes Creados</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="card bg-primary text-white">
+                                            <div class="card-body text-center">
+                                                <h3>@Model.Empleado.Asignacions.Count</h3>
+                                                <p>Asignaciones</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Empleado.Equipos.Any())
+                        {
+                            <hr />
+                            <h5>Equipos Asignados</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Identificador</th>
+                                            <th>Nombre</th>
+                                            <th>Serie</th>
+                                            <th>Estado</th>
+                                            <th>Valor</th>
+                                            <th>Fecha Asignación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var equipo in Model.Empleado.Equipos)
+                                        {
+                                            <tr>
+                                                <td>@equipo.Identificador</td>
+                                                <td>@equipo.Nombre</td>
+                                                <td>@equipo.Serie</td>
+                                                <td>
+                                                    @if (equipo.Estado == "Disponible")
+                                                    {
+                                                        <span class="badge bg-success">@equipo.Estado</span>
+                                                    }
+                                                    else if (equipo.Estado == "En uso")
+                                                    {
+                                                        <span class="badge bg-info">@equipo.Estado</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-warning">@equipo.Estado</span>
+                                                    }
+                                                </td>
+                                                <td>$@equipo.Valor.ToString("N2")</td>
+                                                <td>@equipo.FechaCommit?.ToString("dd/MM/yyyy")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                        @if (Model.Empleado.Reportes.Any())
+                        {
+                            <hr />
+                            <h5>Reportes Recientes</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Equipo</th>
+                                            <th>Observación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var reporte in Model.Empleado.Reportes.OrderByDescending(r => r.FechaCommit).Take(5))
+                                        {
+                                            <tr>
+                                                <td>@reporte.FechaCommit?.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>@reporte.IdEquipoNavigation?.Nombre</td>
+                                                <td>@(reporte.Observacion?.Length > 50 ? reporte.Observacion.Substring(0, 50) + "..." : reporte.Observacion)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> Empleado no encontrado.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

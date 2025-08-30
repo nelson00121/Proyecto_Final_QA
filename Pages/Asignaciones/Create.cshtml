@@ -1,0 +1,134 @@
+@page
+@model ProFinQA.Pages.Asignaciones.CreateModel
+@{
+    ViewData["Title"] = "Nueva Asignación";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Nueva Asignación de Equipo</h4>
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Asignacion.IdEmpleado" class="form-label">Empleado</label>
+                                    <select asp-for="Asignacion.IdEmpleado" class="form-select" asp-items="ViewBag.IdEmpleado">
+                                        <option value="">Seleccionar empleado...</option>
+                                    </select>
+                                    <span asp-validation-for="Asignacion.IdEmpleado" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Asignacion.IdEquipo" class="form-label">Equipo</label>
+                                    <select asp-for="Asignacion.IdEquipo" class="form-select" asp-items="ViewBag.IdEquipo" id="equipoSelect">
+                                        <option value="">Seleccionar equipo...</option>
+                                    </select>
+                                    <span asp-validation-for="Asignacion.IdEquipo" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Asignacion.FechaInicio" class="form-label">Fecha de Inicio</label>
+                                    <input asp-for="Asignacion.FechaInicio" class="form-control" type="date" />
+                                    <span asp-validation-for="Asignacion.FechaInicio" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Asignacion.FechaFin" class="form-label">Fecha de Fin (Opcional)</label>
+                                    <input asp-for="Asignacion.FechaFin" class="form-control" type="date" />
+                                    <span asp-validation-for="Asignacion.FechaFin" class="text-danger"></span>
+                                    <small class="form-text text-muted">Dejar vacío para asignaciones permanentes</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Asignacion.Observacion" class="form-label">Observaciones (Opcional)</label>
+                            <textarea asp-for="Asignacion.Observacion" class="form-control" rows="3" placeholder="Observaciones sobre la asignación..."></textarea>
+                            <span asp-validation-for="Asignacion.Observacion" class="text-danger"></span>
+                        </div>
+
+                        <div id="equipoInfo" class="card bg-light mb-3" style="display: none;">
+                            <div class="card-body">
+                                <h6 class="card-title">Información del Equipo Seleccionado</h6>
+                                <div id="equipoDetails"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Crear Asignación
+                            </button>
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Información de equipos disponibles
+        var equiposInfo = @Html.Raw(Json.Serialize(Model.EquiposInfo));
+        
+        document.getElementById('equipoSelect').addEventListener('change', function() {
+            var equipoId = this.value;
+            var equipoInfoDiv = document.getElementById('equipoInfo');
+            var equipoDetailsDiv = document.getElementById('equipoDetails');
+            
+            if (equipoId && equiposInfo[equipoId]) {
+                var equipo = equiposInfo[equipoId];
+                equipoDetailsDiv.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Identificador:</strong> ${equipo.identificador}</p>
+                            <p><strong>Serie:</strong> ${equipo.serie}</p>
+                            <p><strong>Estado:</strong> <span class="badge bg-${equipo.estado === 'Disponible' ? 'success' : 'warning'}">${equipo.estado}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Marca:</strong> ${equipo.marca}</p>
+                            <p><strong>Valor:</strong> $${equipo.valor}</p>
+                            <p><strong>Color:</strong> ${equipo.color}</p>
+                        </div>
+                    </div>
+                `;
+                equipoInfoDiv.style.display = 'block';
+            } else {
+                equipoInfoDiv.style.display = 'none';
+            }
+        });
+        
+        // Establecer fecha actual por defecto
+        document.addEventListener('DOMContentLoaded', function() {
+            var fechaInput = document.querySelector('input[type="date"]');
+            if (fechaInput && !fechaInput.value) {
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var yyyy = today.getFullYear();
+                fechaInput.value = yyyy + '-' + mm + '-' + dd;
+            }
+        });
+    </script>
+}

@@ -1,0 +1,163 @@
+@page
+@model ProFinQA.Pages.Equipos.IndexModel
+@{
+    ViewData["Title"] = "Gestión de Equipos";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gestión de Equipos</h1>
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Agregar Equipo
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <form method="get">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="searchString" 
+                                   value="@Model.SearchString" placeholder="Buscar por nombre, serie o identificador...">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <form method="get" class="d-flex">
+                        <input type="hidden" name="searchString" value="@Model.SearchString">
+                        <select name="estadoFilter" class="form-select me-2" onchange="this.form.submit()">
+                            <option value="">Todos los estados</option>
+                            <option value="activo" selected="@(Model.EstadoFilter == "activo")">Activo</option>
+                            <option value="inactivo" selected="@(Model.EstadoFilter == "inactivo")">Inactivo</option>
+                            <option value="mantenimiento" selected="@(Model.EstadoFilter == "mantenimiento")">Mantenimiento</option>
+                            <option value="suspendido" selected="@(Model.EstadoFilter == "suspendido")">Suspendido</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Identificador</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Serie</th>
+                            <th>Estado</th>
+                            <th>Empleado Asignado</th>
+                            <th>Valor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Equipos.Any())
+                        {
+                            @foreach (var equipo in Model.Equipos)
+                            {
+                                <tr>
+                                    <td>@equipo.Id</td>
+                                    <td>@equipo.Identificador</td>
+                                    <td>@equipo.Nombre</td>
+                                    <td>@equipo.IdMarcaNavigation?.Nombre</td>
+                                    <td>@equipo.Serie</td>
+                                    <td>
+                                        <span class="badge @(equipo.Estado switch {
+                                            "activo" => "bg-success",
+                                            "inactivo" => "bg-secondary",
+                                            "mantenimiento" => "bg-warning text-dark",
+                                            "suspendido" => "bg-danger",
+                                            _ => "bg-light text-dark"
+                                        })">
+                                            @equipo.Estado?.ToUpper()
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (equipo.IdEmpleadoNavigation != null)
+                                        {
+                                            @($"{equipo.IdEmpleadoNavigation.PrimerNombre} {equipo.IdEmpleadoNavigation.PrimerApellido}")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Sin asignar</span>
+                                        }
+                                    </td>
+                                    <td>@equipo.Valor.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("es-GT"))</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-page="Details" asp-route-id="@equipo.Id" class="btn btn-outline-info btn-sm" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-page="Edit" asp-route-id="@equipo.Id" class="btn btn-outline-warning btn-sm" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-page="Delete" asp-route-id="@equipo.Id" class="btn btn-outline-danger btn-sm" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                                    <p>No se encontraron equipos</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Paginación de equipos">
+                    <ul class="pagination justify-content-center">
+                        @if (Model.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage - 1)" 
+                                   asp-route-searchString="@Model.SearchString" 
+                                   asp-route-estadoFilter="@Model.EstadoFilter">Anterior</a>
+                            </li>
+                        }
+
+                        @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-route-pageNumber="@i" 
+                                   asp-route-searchString="@Model.SearchString" 
+                                   asp-route-estadoFilter="@Model.EstadoFilter">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.CurrentPage < Model.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage + 1)" 
+                                   asp-route-searchString="@Model.SearchString" 
+                                   asp-route-estadoFilter="@Model.EstadoFilter">Siguiente</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>
