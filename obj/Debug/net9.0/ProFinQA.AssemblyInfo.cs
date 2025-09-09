@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProFinQA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4aa310d6195456bdc5b0e495cc85439b5c52611c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+22bc4d02782100642287cdc024da957b480c1ea3")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProFinQA")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProFinQA")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
